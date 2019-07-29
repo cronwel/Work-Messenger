@@ -1,48 +1,41 @@
 /* eslint-disable prettier/prettier */
 import _ from 'lodash';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ListView } from 'react-native';
-import { employeesFetch } from './actions';
+import { FlatList } from 'react-native';
 import ListItem from './ListItem';
+import { employeesFetch } from './actions';
 
-class EmployeeList extends React.Component {
-  componentWillMount(){
+class EmployeeList extends Component {
+
+  componentDidMount() {
     this.props.employeesFetch();
-    this.createDataSource(this.props);
   }
+  keyExtractor = (item) => item.name;
 
-  componentWillReceiveProps(nextProps){
-    this.createDataSource(nextProps);
-  }
-
-  createDataSource({employees}){
-    const datasource = new ListView.DataSource({
-      rowHasChanged: (r1,r2) => r1 !== r2,
-    });
-    this.datasource = datasource.cloneWithRows(employees);
-  }
-
-  renderRow(employee){
-    return <ListItem employee={ employee} />;
-  }
-
-  render() {
+  renderRow({ item }) {
     return (
-      <ListView
-      enableEmptySections
-      dataSource={this.dataSource}
-      renderRow={this.renderRow}
-      />
+      <ListItem name={item} {...this.props}/>
     );
   }
+
+    render() {
+        return (
+            <FlatList
+                data={this.props.employees}
+                keyExtractor={this.keyExtractor}
+                renderItem={this.renderRow.bind(this)}
+            />
+        );
+    }
 }
 
-const mapStateToProps = state => {
-  const employees = _.map(state.employees, (val, uid) => {
-    return { ...val, uid };
-  });
-  return { employees };
-};
+function mapStateToProps({ employees }) {
+    return {
+        employees: _.map(employees, (value, uid) => {
+            return { ...value, uid };
+        }),
+    };
+}
 
-export default connect( mapStateToProps, { employeesFetch })(EmployeeList);
+export default connect(mapStateToProps, { employeesFetch })(EmployeeList);

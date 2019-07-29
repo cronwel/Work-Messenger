@@ -1,17 +1,18 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
-import {Actions} from 'react-native-router-flux';
+  import {
+    Text,
+    TouchableWithoutFeedback,
+    View,
+  } from 'react-native';
+import { Actions } from 'react-native-router-flux';
+
 import { CardSection } from './common';
 
 class ListItem extends React.Component {
 
   onRowPress(){
-    Actions.emloyeeCreate({ employee: this.props.employee });
+    Actions.employeeUpdate({ employee: this.props.employee });
   }
   render(){
     const { name } = this.props.employee;
